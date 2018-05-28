@@ -2,7 +2,7 @@
 
 /********************************************************************************************
  *                                                                                          *
- * Перед началом работы с таском, пожалуйста ознакомьтесь с туториалом:                             *
+ * Перед началом работы с таском, пожалуйста ознакомьтесь с туториалом:                     *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String  *
  *                                                                                          *
  ********************************************************************************************/
@@ -22,7 +22,7 @@
  *   '',  'bb'  => 'bb'
  */
 function concatenateStrings(value1, value2) {
-    throw new Error('Not implemented');
+	return value1.concat(value2);
 }
 
 
@@ -38,7 +38,7 @@ function concatenateStrings(value1, value2) {
  *   ''      => 0
  */
 function getStringLength(value) {
-    throw new Error('Not implemented');
+    return value.length;
 }
 
 /**
@@ -55,7 +55,7 @@ function getStringLength(value) {
  *   'Chuck','Norris'  => 'Hello, Chuck Norris!'
  */
 function getStringFromTemplate(firstName, lastName) {
-    throw new Error('Not implemented');
+    return `Hello, ${firstName} ${lastName}!`;
 }
 
 /**
@@ -69,7 +69,8 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
 function extractNameFromTemplate(value) {
-    throw new Error('Not implemented');
+	return value.substring(7, value.length - 1);
+
 }
 
 
@@ -84,7 +85,7 @@ function extractNameFromTemplate(value) {
  *   'cat'       => 'c'
  */
 function getFirstChar(value) {
-    throw new Error('Not implemented');
+    return value[0];
 }
 
 /**
@@ -99,7 +100,22 @@ function getFirstChar(value) {
  *   '\tHello, World! ' => 'Hello, World!'
  */
 function removeLeadingAndTrailingWhitespaces(value) {
-    throw new Error('Not implemented');
+	var i = 0,
+		j = value.length - 1;
+	let str = '';
+
+    while (value[i] == ' ' || value[i] == '\t') {
+    	++i;
+    }
+
+    while (value[j] == ' ' || value[j] == '\t') {
+    	--j;
+    }
+
+    for (let k = i; k <= j; k++)
+    	str = str.concat(value[k]);
+
+    return str;
 }
 
 /**
@@ -114,7 +130,11 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'cat', 3 => 'catcatcat'
  */
 function repeatString(value, count) {
-    throw new Error('Not implemented');
+	var str = '';
+	for (let i = 0; i < count; i++)
+		str = str.concat(value);
+
+	return str;    
 }
 
 /**
@@ -130,7 +150,16 @@ function repeatString(value, count) {
  *   'ABABAB','BA' => 'ABAB'
  */
 function removeFirstOccurrences(str, value) {
-    throw new Error('Not implemented');
+
+    let posInStr = str.indexOf(value);
+    var outputStr = '';
+    for(let i = 0; i < posInStr; i++)
+    	outputStr = outputStr.concat(str[i]);
+    for(let i = posInStr + value.length; i < str.length; i++)
+    	outputStr = outputStr.concat(str[i]);
+
+    return outputStr;
+
 }
 
 /**
@@ -145,7 +174,8 @@ function removeFirstOccurrences(str, value) {
  *   '<a>' => 'a'
  */
 function unbracketTag(str) {
-    throw new Error('Not implemented');
+	var outputStr;
+    return outputStr = str.substring(1, str.length - 1);
 }
 
 
@@ -160,7 +190,7 @@ function unbracketTag(str) {
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
 function convertToUpperCase(str) {
-    throw new Error('Not implemented');
+    return str.toUpperCase();
 }
 
 /**
@@ -174,7 +204,22 @@ function convertToUpperCase(str) {
  *   'info@gmail.com' => ['info@gmail.com']
  */
 function extractEmails(str) {
-    throw new Error('Not implemented');
+    var arr = [];
+    let i = 0;
+    let j = 0;
+    let arrElement = '';
+    while (i < str.length) {
+	    while (i < str.length && str[i] != ';') {
+	    	++i;
+	    }
+
+	    arrElement = str.substring(j, i);
+	    arr.push(arrElement);
+	    ++i;
+	    j = i;
+	}
+
+    return arr;
 }
 
 /**
@@ -201,7 +246,23 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-    throw new Error('Not implemented');
+    var str = '┌';
+    for (let i = 1; i < width - 1; i++)
+    	str = str.concat('─');
+    str = str.concat('┐').concat('\n');
+    for (let i = 0; i < height - 2; i++) {
+    	str = str.concat('│');
+    	for (let j = 1; j < width - 1; j++)
+    		str = str.concat(' ');
+    	str = str.concat('│').concat('\n');
+    }
+    str = str.concat('└');
+    for (let i = 1; i < width - 1; i++)
+    	str = str.concat('─');
+    str = str.concat('┘').concat('\n');
+
+    return str;
+
 }
 
 
@@ -221,7 +282,20 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-    throw new Error('Not implemented');
+    
+    let outputStr = '';
+    let index;
+    let output;
+    for(let i = 0; i < str.length; i++) {
+    	index = str.charCodeAt(i);
+    	if (index > 64 && index < 78 || index > 96 && index < 110) 
+    		index += 13;
+    	else if (index > 77 && index < 91 || index > 109 && index < 123) 
+    		index -= 13;
+    	output = String.fromCharCode((index));
+    	outputStr = outputStr.concat(output);
+    }
+    return outputStr;
 }
 
 /**
@@ -238,7 +312,9 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-    throw new Error('Not implemented');
+    if (typeof(value) === 'string' || value instanceof String)
+    	return true;
+    return false;
 }
 
 
@@ -267,7 +343,43 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-    throw new Error('Not implemented');
+
+	let index = 0;
+	let number = value.substring(0, value.length - 1);
+
+	switch (number) {
+		case 'A': 
+			index += 0;
+			break;
+		case 'J': 
+			index += 10;
+			break;
+		case 'Q': 
+			index += 11;
+			break;
+		case 'K': 
+			index += 12;
+			break;
+		default:
+			index += number - 1;
+			break;
+	}
+
+    if (value[value.length - 1] == '♦') {
+    	index += 13;
+
+    }
+    else if (value[value.length - 1] == '♥') {
+    	index += 26;
+
+    }
+    else if (value[value.length - 1] == '♠') {
+    	index += 39;
+
+    }
+
+    return index;
+
 }
 
 

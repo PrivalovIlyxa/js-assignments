@@ -24,7 +24,11 @@
  *    console.log(r.getArea());   // => 200
  */
 function Rectangle(width, height) {
-    throw new Error('Not implemented');
+    this.width = width;
+    this.height = height;
+    Rectangle.prototype.getArea =  function() {
+        return this.width * this.height;
+    }
 }
 
 
@@ -39,7 +43,7 @@ function Rectangle(width, height) {
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
 function getJSON(obj) {
-    throw new Error('Not implemented');
+    return JSON.stringify(obj);
 }
 
 
@@ -55,7 +59,13 @@ function getJSON(obj) {
  *
  */
 function fromJSON(proto, json) {
-    throw new Error('Not implemented');
+    let jsonObj = JSON.parse(json);
+    let obj = Object.create(proto);
+    for (let field in proto.prototype)
+        obj[field] = proto[field];
+    for (let field in jsonObj)
+        obj[field] = jsonObj[field]
+    return Object.setPrototypeOf(jsonObj, proto);
 }
 
 
@@ -111,33 +121,89 @@ function fromJSON(proto, json) {
 
 const cssSelectorBuilder = {
 
-    element: function(value) {
-        throw new Error('Not implemented');
-    },
+    stringify: function() { 
+        return (this.combineValue || '') + 
+        (this.elementValue || '') + 
+        (this.idValue || '') + 
+        (this.classValue || '') + 
+        (this.attrValue || '') + 
+        (this.pseudoClassValue || '') + 
+        (this.pseudoElementValue || '') ; 
+    }, 
+    
+    orderChekc: function (obj, prop) { 
+        let orderArray = [obj.elementValue, obj.idValue, obj.classValue, obj.attrValue, obj.pseudoClassValue, obj.pseudoElementValue]; 
+        orderArray.forEach((item, i) => { 
+        if(item && i > orderArray.indexOf(prop)) 
+        throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'); 
+        }); 
+    }, 
+    
+    element: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        if(obj.elementValue) 
+            throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector'); 
+        else 
+            obj.elementValue = value; 
+        this.orderChekc(obj, obj.elementValue); 
+        return obj; 
+    }, 
+    
+    id: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        if(obj.idValue) {
+            throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector'); 
+        }else {
+            obj.idValue = '#' + value; 
+        }
+            
+        this.orderChekc(obj, obj.idValue); 
+        return obj; 
+    }, 
+    
+    class: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        obj.classValue = (obj.classValue || '') + '.' + value; 
+        this.orderChekc(obj, obj.classValue); 
+        return obj; 
+    }, 
+    
+    attr: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        obj.attrValue = (obj.attrValue || '') + '[' + value + ']'; 
+        this.orderChekc(obj, obj.attrValue); 
+        return obj; 
+    }, 
 
-    id: function(value) {
-        throw new Error('Not implemented');
-    },
-
-    class: function(value) {
-        throw new Error('Not implemented');
-    },
-
-    attr: function(value) {
-        throw new Error('Not implemented');
-    },
-
-    pseudoClass: function(value) {
-        throw new Error('Not implemented');
-    },
-
-    pseudoElement: function(value) {
-        throw new Error('Not implemented');
-    },
-
-    combine: function(selector1, combinator, selector2) {
-        throw new Error('Not implemented');
-    },
+    pseudoClass: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        obj.pseudoClassValue = (obj.pseudoClassValue || '') + ':' + value; 
+        this.orderChekc(obj, obj.pseudoClassValue); 
+        return obj; 
+    }, 
+    
+    pseudoElement: function(value) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        if(obj.pseudoElementValue) 
+            throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector'); 
+        else 
+            obj.pseudoElementValue = '::' + value; 
+        this.orderChekc(obj, obj.pseudoElementValue); 
+        return obj; 
+    }, 
+    
+    combine: function(selector1, combinator, selector2) { 
+        let obj = {}; 
+        obj.__proto__ = this; 
+        obj.combineValue = (obj.combineValue || '') + selector1.stringify() + ' ' + combinator + ' ' + selector2.stringify(); 
+        return obj; 
+    }, 
 };
 
 
